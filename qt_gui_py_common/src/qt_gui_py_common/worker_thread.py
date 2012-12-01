@@ -32,25 +32,31 @@
 
 from python_qt_binding.QtCore import QThread
 
+
 class WorkerThread(QThread):
-    
-    """Convenience wrapper around QThread allowing to easily run code in a separate thread, 
+
+    """Convenience wrapper around QThread allowing to easily run code in a separate thread,
     get notified upon completion and kill the thread synchronously."""
 
     def __init__(self, run_callback, finished_callback=None):
         super(WorkerThread, self).__init__()
-        self._run_callback = run_callback
+        self.run = run_callback
         self._finished_callback = finished_callback
 
     def start(self):
-        self.run = self._run_callback
-        if self._finished_callback is not None:
-            self.finished.connect(self._finished_callback)
+        # reconnect finished signal
+        self.finished.connect(self._finished_handler)
         super(WorkerThread, self).start()
+
+    def _finished_handler(self):
+        # disconnect finished signal to avoid being called twice
+        self.finished.disconnect(self._finished_handler)
+        if self._finished_callback is not None:
+            self._finished_callback()
 
     def kill(self):
         if self.isRunning():
-            if self._finished_callback is not None:
-                self.finished.disconnect(self._finished_callback)
+            # clean up
+            self.finished.disconnect(self._finished_handler)
             self.terminate()
             self.wait()
