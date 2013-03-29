@@ -1,3 +1,3 @@
 [git-buildpackage]
-upstream-branch=release/qt_gui/0.2.12
+upstream-branch=@(release_tag)
 upstream-tree=branch
