@@ -1,0 +1,12 @@
+Source: ros-hydro-qt-gui-py-common
+Section: misc
+Priority: extra
+Maintainer: Dorian Scholz <scholz@sim.tu-darmstadt.de>, Isaac Saito <isao.saito@mavs.uta.edu>
+Build-Depends: debhelper (>= 7.0.50~), ros-hydro-catkin
+Homepage: http://ros.org/wiki/qt_gui_py_common
+Standards-Version: 3.9.2
+
+Package: ros-hydro-qt-gui-py-common
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-rospkg, ros-hydro-python-qt-binding
+Description: qt_gui_py_common provides common functionality for GUI plugins written in Python.
