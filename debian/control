@@ -1,0 +1,12 @@
+Source: ros-groovy-qt-gui
+Section: misc
+Priority: extra
+Maintainer: Dirk Thomas <dthomas@osrfoundation.org>, Isaac Saito <isao.saito@mavs.uta.edu>
+Build-Depends: debhelper (>= 7.0.50~), libgenrunner-dev, libpyside-dev, libshiboken-dev, python-pyside, python-qt4, python-qt4-dev, python-sip-dev, qt4-qmake, ros-groovy-catkin, shiboken
+Homepage: http://ros.org/wiki/qt_gui
+Standards-Version: 3.9.2
+
+Package: ros-groovy-qt-gui
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-groovy-python-qt-binding, tango-icon-theme
+Description: qt_gui provides the infrastructure for an integrated graphical user interface based on Qt. It is extensible with Python- and C++-based plugins (implemented in separate packages) which can contribute arbitrary widgets. It requires either PyQt or PySide bindings.
