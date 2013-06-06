@@ -48,6 +48,9 @@
     <number>0</number>
    </property>
    <item>
+    <widget class="QLabel" name="icon_label"/>
+   </item>
+   <item>
     <widget class="QLabel" name="title_label">
      <property name="lineWidth">
       <number>0</number>
@@ -203,6 +206,37 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item>
+    <widget class="QPushButton" name="minimize_button">
+     <property name="minimumSize">
+      <size>
+       <width>16</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Minimize</string>
+     </property>
+     <property name="text">
+      <string>_</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QPushButton" name="float_button">
