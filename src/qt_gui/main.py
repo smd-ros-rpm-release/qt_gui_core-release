@@ -78,12 +78,16 @@ class Main(object):
         common_group.add_argument('-h', '--help', action='help',
             help='show this help message and exit')
         if not standalone:
+            common_group.add_argument('-f', '--freeze-layout', dest='freeze_layout', action='store_true',
+                help='freeze the layout of the GUI (prevent rearranging widgets, disable undock/redock)')
             common_group.add_argument('-l', '--lock-perspective', dest='lock_perspective', action='store_true',
                 help='lock the GUI to the used perspective (hide menu bar and close buttons of plugins)')
             common_group.add_argument('-m', '--multi-process', dest='multi_process', default=False, action='store_true',
                 help='use separate processes for each plugin instance (currently only supported under X11)')
             common_group.add_argument('-p', '--perspective', dest='perspective', type=str, metavar='PERSPECTIVE',
-                help='start with this perspective')
+                help='start with this named perspective')
+            common_group.add_argument('--perspective-file', dest='perspective_file', type=str, metavar='PERSPECTIVE_FILE',
+                help='start with a perspective loaded from a file')
         common_group.add_argument('--reload-import', dest='reload_import', default=False, action='store_true',
             help='reload every imported module')
         if not standalone:
@@ -154,6 +158,8 @@ class Main(object):
            QIcon.fromTheme('document-open').isNull() or \
            QIcon.fromTheme('edit-cut').isNull() or \
            QIcon.fromTheme('object-flip-horizontal').isNull():
+            if 'darwin' in platform.platform().lower() and '/usr/local/share/icons' not in QIcon.themeSearchPaths():
+                QIcon.setThemeSearchPaths(QIcon.themeSearchPaths() + ['/usr/local/share/icons'])
             original_theme = QIcon.themeName()
             QIcon.setThemeName('Tango')
             if QIcon.fromTheme('document-save').isNull():
@@ -187,9 +193,11 @@ class Main(object):
 
         # set default values for options not available in standalone mode
         if standalone:
+            self._options.freeze_layout = False
             self._options.lock_perspective = False
             self._options.multi_process = False
             self._options.perspective = None
+            self._options.perspective_file = None
             self._options.standalone_plugin = standalone
             self._options.list_perspectives = False
             self._options.list_plugins = False
@@ -204,6 +212,9 @@ class Main(object):
         try:
             if self._options.plugin_args and not self._options.standalone_plugin and not self._options.command_start_plugin and not self._options.embed_plugin:
                 raise RuntimeError('Option --args can only be used together with either --standalone, --command-start-plugin or --embed-plugin option')
+
+            if self._options.freeze_layout and not self._options.lock_perspective:
+                raise RuntimeError('Option --freeze_layout can only be used together with the --lock_perspective option')
 
             list_options = (self._options.list_perspectives, self._options.list_plugins)
             list_options_set = [opt for opt in list_options if opt is not False]
@@ -233,6 +244,14 @@ class Main(object):
             groups_set = [opt for opt in groups if len(opt) > 0]
             if len(groups_set) > 1:
                 raise RuntimeError('Options from different groups (--list, --command, --embed) can not be used together')
+
+            perspective_options = (self._options.perspective, self._options.perspective_file)
+            perspective_options_set = [opt for opt in perspective_options if opt is not None]
+            if len(perspective_options_set) > 1:
+                raise RuntimeError('Only one --perspective-* option can be used at a time')
+
+            if self._options.perspective_file is not None and not os.path.isfile(self._options.perspective_file):
+                raise RuntimeError('Option --perspective-file must reference existing file')
 
         except RuntimeError as e:
             print(str(e))
@@ -313,6 +332,7 @@ class Main(object):
         from .composite_plugin_provider import CompositePluginProvider
         from .help_provider import HelpProvider
         from .main_window import MainWindow
+        from .minimized_dock_widgets_toolbar import MinimizedDockWidgetsToolbar
         from .perspective_manager import PerspectiveManager
         from .plugin_manager import PluginManager
 
@@ -346,7 +366,6 @@ class Main(object):
             if self._options.on_top:
                 main_window.setWindowFlags(Qt.WindowStaysOnTopHint)
 
-            main_window.setDockNestingEnabled(True)
             main_window.statusBar()
 
             def sigint_handler(*args):
@@ -407,6 +426,11 @@ class Main(object):
 
         if main_window is not None:
             plugin_manager.set_main_window(main_window, menu_bar)
+
+            if not self._options.freeze_layout:
+                minimized_dock_widgets_toolbar = MinimizedDockWidgetsToolbar(main_window)
+                main_window.addToolBar(Qt.BottomToolBarArea, minimized_dock_widgets_toolbar)
+                plugin_manager.set_minimized_dock_widgets_toolbar(minimized_dock_widgets_toolbar)
 
         if settings is not None and menu_bar is not None:
             perspective_menu = menu_bar.addMenu(menu_bar.tr('Perspectives'))
@@ -489,10 +513,12 @@ class Main(object):
 
         # switch perspective
         if perspective_manager is not None:
-            if not plugin:
-                perspective_manager.set_perspective(self._options.perspective)
-            else:
+            if plugin:
                 perspective_manager.set_perspective(plugin, hide_and_without_plugin_changes=True)
+            elif self._options.perspective_file:
+                perspective_manager.import_perspective_from_file(self._options.perspective_file, perspective_manager.HIDDEN_PREFIX + '__cli_perspective_from_file')
+            else:
+                perspective_manager.set_perspective(self._options.perspective)
 
         # load specific plugin
         if plugin:
