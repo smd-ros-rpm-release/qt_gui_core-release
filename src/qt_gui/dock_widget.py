@@ -29,8 +29,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 from python_qt_binding.QtCore import qDebug, QEvent, QPoint, QRect, Qt
-from python_qt_binding.QtGui import QApplication, QDockWidget, QMainWindow, QMouseEvent
+from python_qt_binding.QtGui import QApplication, QDockWidget, QMouseEvent
 
+from .dockable_main_window import DockableMainWindow
 from .reparent_event import ReparentEvent
 
 
@@ -55,7 +56,8 @@ class DockWidget(QDockWidget):
             qDebug('%srelease, rel=%s, global=%s, diff=%s' % ((' - pseudo ' if self._releasing_and_repressing_while_dragging else ''), e.pos(), e.globalPos(), e.globalPos() - self.pos()))
 
         # store local position when pressing button before starting the custom drag'n'drop
-        if self._dragging_parent is None and e.type() == QEvent.MouseButtonPress and e.button() == Qt.LeftButton:
+        # only allow when layout is not frozen
+        if self._dragging_parent is None and e.type() == QEvent.MouseButtonPress and e.button() == Qt.LeftButton and bool(self.features() & QDockWidget.DockWidgetMovable):
             self._dragging_local_pos = e.pos()
 
         if self._dragging_parent is None and self._dragging_local_pos is not None and e.type() == QEvent.Move and QApplication.mouseButtons() & Qt.LeftButton:
@@ -131,7 +133,7 @@ class DockWidget(QDockWidget):
                 return None
             widget = widget.parent()
         while widget is not None:
-            if isinstance(widget, QMainWindow):
+            if isinstance(widget, DockableMainWindow):
                 break
             widget = widget.parent()
         return widget
