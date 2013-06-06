@@ -1,0 +1,12 @@
+Source: ros-groovy-qt-gui-core
+Section: misc
+Priority: extra
+Maintainer: "Dirk Thomas <dthomas@osrfoundation.org>"
+Build-Depends: debhelper (>= 7.0.50~), ros-groovy-catkin
+Homepage: http://ros.org/wiki/qt_gui_core
+Standards-Version: 3.9.2
+
+Package: ros-groovy-qt-gui-core
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-groovy-qt-dotgraph, ros-groovy-qt-gui, ros-groovy-qt-gui-app, ros-groovy-qt-gui-cpp, ros-groovy-qt-gui-py-common
+Description: Integration of the ROS package system and ROS-specific plugins for a Qt-based GUI.
