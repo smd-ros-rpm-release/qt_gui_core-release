@@ -107,30 +107,32 @@ public:
     {
       std::string lookup_name = *it;
 
-      std::string package_name = class_loader_->getClassPackage(lookup_name);
-      std::string package_path = ros::package::getPath(package_name);
-      std::string class_name = class_loader_->getName(lookup_name);
-      std::string class_type = class_loader_->getClassType(lookup_name);
-      std::string base_class_type = class_loader_->getBaseClassType();
+      std::string name = class_loader_->getName(lookup_name);
+      std::string plugin_xml = class_loader_->getPluginManifestPath(lookup_name);
+      boost::filesystem::path p(plugin_xml);
+#if BOOST_FILESYSTEM_VERSION >= 3
+      std::string plugin_path = p.parent_path().string();
+#else
+      std::string plugin_path = p.parent_path();
+#endif
 
       QMap<QString, QString> attributes;
-      attributes["plugin_id"] = lookup_name.c_str();
-      attributes["package_name"] = package_name.c_str();
-      attributes["package_path"] = package_path.c_str();
-      attributes["class_name"] = class_name.c_str();
-      attributes["class_type"] = class_type.c_str();
-      attributes["class_base_class_type"] = base_class_type.c_str();
+      attributes["class_name"] = name.c_str();
+      attributes["class_type"] = class_loader_->getClassType(lookup_name).c_str();
+      attributes["class_base_class_type"] = class_loader_->getBaseClassType().c_str();
+      attributes["package_name"] = class_loader_->getClassPackage(lookup_name).c_str();
+      attributes["plugin_path"] = plugin_path.c_str();
 
       // check if plugin is available
       std::string library_path = class_loader_->getClassLibraryPath(lookup_name);
       attributes["not_available"] = !std::ifstream(library_path.c_str()) ? QString("library ").append(lookup_name.c_str()).append(" not found (may be it must be built?)") : "";
 
       PluginDescriptor* plugin_descriptor = new PluginDescriptor(lookup_name.c_str(), attributes);
-      QString label = class_name.c_str();
+      QString label = name.c_str();
       QString statustip = class_loader_->getClassDescription(lookup_name).c_str();
       QString icon;
       QString icontype;
-      parseManifest(lookup_name, package_path, label, statustip, icon, icontype, plugin_descriptor);
+      parseManifest(lookup_name, plugin_path, label, statustip, icon, icontype, plugin_descriptor);
       plugin_descriptor->setActionAttributes(label, statustip, icon, icontype);
 
       // add plugin descriptor
@@ -255,7 +257,7 @@ private slots:
 
 private:
 
-  bool parseManifest(const std::string& lookup_name, const std::string& package_path, QString& label, QString& statustip, QString& icon, QString& icontype, PluginDescriptor* plugin_descriptor)
+  bool parseManifest(const std::string& lookup_name, const std::string& plugin_path, QString& label, QString& statustip, QString& icon, QString& icontype, PluginDescriptor* plugin_descriptor)
   {
     //qDebug("RosPluginlibPluginProvider::parseManifest()");
 
@@ -291,7 +293,7 @@ private:
             if (qtgui_element)
             {
               // extract meta information
-              parseActionAttributes(qtgui_element, package_path, label, statustip, icon, icontype);
+              parseActionAttributes(qtgui_element, plugin_path, label, statustip, icon, icontype);
 
               // extract grouping information
               TiXmlElement* group_element = qtgui_element->FirstChildElement("group");
@@ -301,7 +303,7 @@ private:
                 QString group_statustip;
                 QString group_icon;
                 QString group_icontype;
-                parseActionAttributes(group_element, package_path, group_label, group_statustip, group_icon, group_icontype);
+                parseActionAttributes(group_element, plugin_path, group_label, group_statustip, group_icon, group_icontype);
                 plugin_descriptor->addGroupAttributes(group_label, group_statustip, group_icon, group_icontype);
 
                 group_element = group_element->NextSiblingElement("group");
@@ -320,7 +322,7 @@ private:
     return false;
   }
 
-  void parseActionAttributes(TiXmlElement* element, const std::string& package_path, QString& label, QString& statustip, QString& icon, QString& icontype)
+  void parseActionAttributes(TiXmlElement* element, const std::string& plugin_path, QString& label, QString& statustip, QString& icon, QString& icontype)
   {
     TiXmlElement* child_element;
     if ((child_element = element->FirstChildElement("label")) != 0)
@@ -333,7 +335,7 @@ private:
       if (icontype == "file")
       {
         // prepend base path
-        icon = package_path.c_str();
+        icon = plugin_path.c_str();
         icon += "/";
         icon += child_element->GetText();
       }
