@@ -31,11 +31,9 @@
 import webbrowser
 
 from python_qt_binding.QtCore import QObject, Slot
-try:
-    import rospkg
-    load_manifest = rospkg.RosPack().get_manifest
-except ImportError:
-    from roslib.manifest import load_manifest
+from roslib.packages import get_pkg_dir, InvalidROSPkgException
+from rospkg import InvalidManifest, MANIFEST_FILE, parse_manifest_file
+
 
 class HelpProvider(QObject):
 
@@ -47,5 +45,12 @@ class HelpProvider(QObject):
     @Slot(object)
     def plugin_help_request(self, plugin_descriptor):
         package_name = plugin_descriptor.attributes()['package_name']
-        manifest = load_manifest(package_name)
+        try:
+            package_path = get_pkg_dir(package_name)
+        except InvalidROSPkgException:
+            return
+        try:
+            manifest = parse_manifest_file(package_path, MANIFEST_FILE)
+        except (InvalidManifest, IOError):
+            return
         webbrowser.open(manifest.url)

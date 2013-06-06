@@ -35,7 +35,7 @@ from python_qt_binding.QtGui import QDockWidget, QToolBar
 
 from .dock_widget import DockWidget
 from .dock_widget_title_bar import DockWidgetTitleBar
-from .window_title_changed_signaler import WindowTitleChangedSignaler
+from .window_changed_signaler import WindowChangedSignaler
 
 
 class PluginHandler(QObject):
@@ -59,6 +59,7 @@ class PluginHandler(QObject):
         self._application_context = application_context
         self._container_manager = container_manager
         self._argv = argv if argv else []
+        self._minimized_dock_widgets_toolbar = None
 
         self._defered_check_close.connect(self._check_close, Qt.QueuedConnection)
         self._plugin_provider = None
@@ -67,7 +68,7 @@ class PluginHandler(QObject):
 
         self._plugin_has_configuration = False
 
-        # mapping of added widgets to their parent dock widget and WindowTitleChangedSignaler
+        # mapping of added widgets to their parent dock widget and WindowChangedSignaler
         self._widgets = {}
 
         self._toolbars = []
@@ -77,6 +78,9 @@ class PluginHandler(QObject):
 
     def argv(self):
         return self._argv
+
+    def set_minimized_dock_widgets_toolbar(self, toolbar):
+        self._minimized_dock_widgets_toolbar = toolbar
 
     def load(self, plugin_provider, callback=None):
         """
@@ -187,7 +191,7 @@ class PluginHandler(QObject):
             callback(self._instance_id)
 
     def _call_method_on_all_dock_widgets(self, method_name, instance_settings):
-        for dock_widget, _ in self._widgets.values():
+        for dock_widget, _, _ in self._widgets.values():
             name = 'dock_widget' + dock_widget.objectName().replace(self._instance_id.tidy_str(), '', 1)
             settings = instance_settings.get_settings(name)
             method = getattr(dock_widget, method_name)
@@ -225,12 +229,19 @@ class PluginHandler(QObject):
 
     def _create_dock_widget(self):
         dock_widget = DockWidget(self._container_manager)
-        if self._application_context.options.lock_perspective or self._application_context.options.standalone_plugin:
-            # plugins are not closable when perspective is locked or plugins is running standalone
-            features = dock_widget.features()
-            dock_widget.setFeatures(features ^ QDockWidget.DockWidgetClosable)
+        self._update_dock_widget_features(dock_widget)
         self._update_title_bar(dock_widget)
         return dock_widget
+
+    def _update_dock_widget_features(self, dock_widget):
+        if self._application_context.options.lock_perspective or self._application_context.options.standalone_plugin:
+            # dock widgets are not closable when perspective is locked or plugin is running standalone
+            features = dock_widget.features()
+            dock_widget.setFeatures(features ^ QDockWidget.DockWidgetClosable)
+        if self._application_context.options.freeze_layout:
+            # dock widgets are not closable when perspective is locked or plugin is running standalone
+            features = dock_widget.features()
+            dock_widget.setFeatures(features ^ QDockWidget.DockWidgetMovable)
 
     def _update_title_bar(self, dock_widget, hide_help=False, hide_reload=False):
         title_bar = dock_widget.titleBarWidget()
@@ -241,15 +252,17 @@ class PluginHandler(QObject):
             # connect extra buttons
             title_bar.connect_close_button(self._remove_widget_by_dock_widget)
             title_bar.connect_button('help', self._emit_help_signal)
-            title_bar.show_button('help', not hide_help)
+            if hide_help:
+                title_bar.show_button('help', not hide_help)
             title_bar.connect_button('reload', self._emit_reload_signal)
-            title_bar.show_button('reload', not hide_reload)
+            if hide_reload:
+                title_bar.show_button('reload', not hide_reload)
             title_bar.connect_button('configuration', self._trigger_configuration)
             title_bar.show_button('configuration', self._plugin_has_configuration)
 
     def _update_title_bars(self):
         if self._plugin_has_configuration:
-            for dock_widget, _ in self._widgets.values():
+            for dock_widget, _, _ in self._widgets.values():
                 title_bar = dock_widget.titleBarWidget()
                 title_bar.show_button('configuration')
 
@@ -271,11 +284,17 @@ class PluginHandler(QObject):
         # every dock widget needs a unique name for save/restore geometry/state to work
         dock_widget.setObjectName(self._instance_id.tidy_str() + '__' + widget.objectName())
         self._add_dock_widget_to_main_window(dock_widget)
-        signaler = WindowTitleChangedSignaler(widget, widget)
+        signaler = WindowChangedSignaler(widget, widget)
+        signaler.window_icon_changed_signal.connect(self._on_widget_icon_changed)
         signaler.window_title_changed_signal.connect(self._on_widget_title_changed)
-        self._widgets[widget] = [dock_widget, signaler]
-        # trigger to update initial window title
-        signaler.window_title_changed_signal.emit(widget)
+        signaler2 = WindowChangedSignaler(dock_widget, dock_widget)
+        signaler2.hide_signal.connect(self._on_dock_widget_hide)
+        signaler2.show_signal.connect(self._on_dock_widget_show)
+        self._widgets[widget] = [dock_widget, signaler, signaler2]
+        # trigger to update initial window icon and title
+        signaler.emit_all()
+        # trigger to update initial window state
+        signaler2.emit_all()
 
     def _add_dock_widget_to_main_window(self, dock_widget):
         if self._main_window is not None:
@@ -285,21 +304,35 @@ class PluginHandler(QObject):
                 qWarning('PluginHandler._add_dock_widget_to_main_window() duplicate object name "%s", assign unique object names before adding widgets!' % dock_widget.objectName())
             self._main_window.addDockWidget(Qt.BottomDockWidgetArea, dock_widget)
 
+    def _on_widget_icon_changed(self, widget):
+        dock_widget, _, _ = self._widgets[widget]
+        dock_widget.setWindowIcon(widget.windowIcon())
+
     def _on_widget_title_changed(self, widget):
-        dock_widget, _ = self._widgets[widget]
+        dock_widget, _, _ = self._widgets[widget]
         dock_widget.setWindowTitle(widget.windowTitle())
 
-    def _update_widget_title(self, widget, title):
-        dock_widget, _ = self._widgets[widget]
-        dock_widget.setWindowTitle(title)
+    def _on_dock_widget_hide(self, dock_widget):
+        if self._minimized_dock_widgets_toolbar:
+            self._minimized_dock_widgets_toolbar.addDockWidget(dock_widget)
+
+    def _on_dock_widget_show(self, dock_widget):
+        if self._minimized_dock_widgets_toolbar:
+            self._minimized_dock_widgets_toolbar.removeDockWidget(dock_widget)
 
     # pointer to QWidget must be used for PySide to work (at least with 1.0.1)
     @Slot('QWidget*')
     def remove_widget(self, widget):
-        dock_widget, signaler = self._widgets[widget]
+        dock_widget, signaler, signaler2 = self._widgets[widget]
         self._widgets.pop(widget)
         if signaler is not None:
+            signaler.window_icon_changed_signal.disconnect(self._on_widget_icon_changed)
             signaler.window_title_changed_signal.disconnect(self._on_widget_title_changed)
+        if signaler2 is not None:
+            # emit show signal to remove dock widget from minimized toolbar before removal
+            signaler2.show_signal.emit(dock_widget)
+            signaler2.hide_signal.disconnect(self._on_dock_widget_hide)
+            signaler2.show_signal.disconnect(self._on_dock_widget_show)
         # remove dock widget from parent and delete later
         if self._main_window is not None:
             dock_widget.parent().removeDockWidget(dock_widget)
@@ -317,6 +350,9 @@ class PluginHandler(QObject):
         if not toolbar_object_name.startswith(prefix):
             toolbar_object_name = prefix + toolbar_object_name
         toolbar.setObjectName(toolbar_object_name)
+
+        if self._application_context.options.freeze_layout:
+            toolbar.setMovable(False)
 
         self._toolbars.append(toolbar)
         if self._main_window is not None:
