@@ -63,6 +63,7 @@ class PluginManager(QObject):
         self._main_window = None
         self._container_manager = None
         self._plugin_menu = None
+        self._minimized_dock_widgets_toolbar = None
 
         self._global_settings = None
         self._perspective_settings = None
@@ -94,6 +95,9 @@ class PluginManager(QObject):
             self._plugin_menu.load_plugin_signal.connect(self.load_plugin)
             self._plugin_menu.unload_plugin_signal.connect(self.unload_plugin)
 
+    def set_minimized_dock_widgets_toolbar(self, toolbar):
+        self._minimized_dock_widgets_toolbar = toolbar
+
     def discover(self):
         # skip discover if called multiple times
         if self._plugin_descriptors is not None:
@@ -124,13 +128,7 @@ class PluginManager(QObject):
         self.discover()
         plugins = {}
         for plugin_id, plugin_descriptor in self._plugin_descriptors.items():
-            plugin_name_parts = []
-            plugin_name = plugin_descriptor.attributes().get('plugin_name', None)
-            if plugin_name is not None:
-                plugin_name_parts.append(plugin_name)
-            plugin_name_parts += plugin_descriptor.attributes().get('class_type', 'unknown').split('::')
-            plugin_full_name = '/'.join(plugin_name_parts)
-            plugins[plugin_id] = plugin_full_name
+            plugins[plugin_id] = '/'.join(plugin_descriptor.attributes().get('class_type', 'unknown').split('::'))
         return plugins
 
     def is_plugin_running(self, plugin_id, serial_number):
@@ -185,6 +183,8 @@ class PluginManager(QObject):
         # use direct handler for in-process plugins
         else:
             handler = PluginHandlerDirect(self, self._main_window, instance_id, self._application_context, self._container_manager, argv)
+
+        handler.set_minimized_dock_widgets_toolbar(self._minimized_dock_widgets_toolbar)
 
         self._add_running_plugin(instance_id, handler)
         handler.load(self._plugin_provider, callback)
