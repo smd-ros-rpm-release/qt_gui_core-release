@@ -1,0 +1,57 @@
+ros-groovy-qt-dotgraph (0.2.17-0quantal) quantal; urgency=high
+
+  * fix the name/label issue with pygraphviz
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Tue, 20 Aug 2013 22:00:00 -0000
+
+ros-groovy-qt-dotgraph (0.2.16-0quantal) quantal; urgency=high
+
+
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Wed, 05 Jun 2013 22:00:00 -0000
+
+ros-groovy-qt-dotgraph (0.2.15-0quantal) quantal; urgency=high
+
+
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Mon, 01 Apr 2013 22:00:00 -0000
+
+ros-groovy-qt-dotgraph (0.2.14-0quantal) quantal; urgency=high
+
+
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Thu, 28 Mar 2013 21:42:00 -0000
+
+ros-groovy-qt-dotgraph (0.2.13-0quantal) quantal; urgency=high
+
+
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Thu, 28 Mar 2013 17:08:00 -0000
+
+ros-groovy-qt-dotgraph (0.2.12-0quantal) quantal; urgency=high
+
+
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Wed, 16 Jan 2013 23:00:00 -0000
+
+ros-groovy-qt-dotgraph (0.2.11-0quantal) quantal; urgency=high
+
+
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Sat, 12 Jan 2013 23:00:00 -0000
+
+ros-groovy-qt-dotgraph (0.2.10-0quantal) quantal; urgency=high
+
+  * skip subgraphs with empty bounding box
+  * use color for pydot subgraphs
+  * fix (not used) pygraphviz backend
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Thu, 10 Jan 2013 23:00:00 -0000
+
+ros-groovy-qt-dotgraph (0.2.9-0quantal) quantal; urgency=high
+
+  * first public release for Groovy
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Thu, 20 Dec 2012 23:00:00 -0000
+
+
