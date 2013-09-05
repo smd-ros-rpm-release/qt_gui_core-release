@@ -1,0 +1,55 @@
+ros-groovy-qt-gui-app (0.2.17-0oneiric) oneiric; urgency=high
+
+
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Tue, 20 Aug 2013 22:00:00 -0000
+
+ros-groovy-qt-gui-app (0.2.16-0oneiric) oneiric; urgency=high
+
+
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Wed, 05 Jun 2013 22:00:00 -0000
+
+ros-groovy-qt-gui-app (0.2.15-0oneiric) oneiric; urgency=high
+
+
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Mon, 01 Apr 2013 22:00:00 -0000
+
+ros-groovy-qt-gui-app (0.2.14-0oneiric) oneiric; urgency=high
+
+
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Thu, 28 Mar 2013 21:42:00 -0000
+
+ros-groovy-qt-gui-app (0.2.13-0oneiric) oneiric; urgency=high
+
+  * move script 'qt_gui_app' into package specific bin folder (ros-visualization/rqt#68 <https://github.com/ros-visualization/rqt/issues/68>)
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Thu, 28 Mar 2013 17:08:00 -0000
+
+ros-groovy-qt-gui-app (0.2.12-0oneiric) oneiric; urgency=high
+
+
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Wed, 16 Jan 2013 23:00:00 -0000
+
+ros-groovy-qt-gui-app (0.2.11-0oneiric) oneiric; urgency=high
+
+
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Sat, 12 Jan 2013 23:00:00 -0000
+
+ros-groovy-qt-gui-app (0.2.10-0oneiric) oneiric; urgency=high
+
+
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Thu, 10 Jan 2013 23:00:00 -0000
+
+ros-groovy-qt-gui-app (0.2.9-0oneiric) oneiric; urgency=high
+
+  * first public release for Groovy
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Thu, 20 Dec 2012 23:00:00 -0000
+
+
