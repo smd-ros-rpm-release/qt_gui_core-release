@@ -35,7 +35,6 @@ import sys
 from python_qt_binding import QT_BINDING, QT_BINDING_MODULES, QT_BINDING_VERSION
 from python_qt_binding.QtCore import QObject, qVersion
 from python_qt_binding.QtGui import QMessageBox
-from rospkg.rospack import RosPack
 
 from .ros_package_helper import get_package_path
 
@@ -44,8 +43,9 @@ class AboutHandler(QObject):
 
     """Handler for the about action in the menu bar showing a message box with details on the used libraries and their versions."""
 
-    def __init__(self, parent=None):
+    def __init__(self, qtgui_path, parent=None):
         super(AboutHandler, self).__init__(parent)
+        self._qtgui_path = qtgui_path
 
     def show(self):
         # append folder of 'qt_gui_cpp/lib' to module search path
@@ -54,30 +54,22 @@ class AboutHandler(QObject):
         sys.path.append(os.path.join(qt_gui_cpp_path, 'src'))
         from qt_gui_cpp.cpp_binding_helper import qt_gui_cpp
 
-        _rospkg_version = None
-        try:
-            import rospkg
-            _rospkg_version = getattr(rospkg, '__version__', '&lt; 0.2.4')
-        except ImportError:
-            pass
+        import rospkg
+        _rospkg_version = getattr(rospkg, '__version__', '&lt; 0.2.4')
 
-        rp = RosPack()
-        logo = os.path.join(rp.get_path('qt_gui'), 'resource', 'ros_org_vertical.png')
+        logo = os.path.join(self._qtgui_path, 'resource', 'ros_org_vertical.png')
         text = '<img src="%s" width="56" height="200" style="float: left;"/>' % logo
 
-        text += '<h3 style="margin-top: 1px;">%s</h3>' % self.tr('ROS GUI')
+        text += '<h3 style="margin-top: 1px;">%s</h3>' % self.tr('rqt')
 
-        text += '<p>%s %s</p>' % (self.tr('ROS GUI is a framework for graphical user interfaces.'), self.tr('It is extensible with plugins which can be written in either Python or C++.'))
-        text += '<p>%s</p>' % (self.tr('Please see the <a href="%s">Wiki</a> for more information on ROS GUI and available plugins.' % 'http://www.ros.org/wiki/rqt'))
+        text += '<p>%s %s</p>' % (self.tr('rqt is a framework for graphical user interfaces.'), self.tr('It is extensible with plugins which can be written in either Python or C++.'))
+        text += '<p>%s</p>' % (self.tr('Please see the <a href="%s">Wiki</a> for more information on rqt and available plugins.' % 'http://wiki.ros.org/rqt'))
 
         text += '<p>%s: ' % self.tr('Utilized libraries:')
 
         text += 'Python %s, ' % platform.python_version()
 
-        if _rospkg_version is not None:
-            text += 'rospkg %s, ' % _rospkg_version
-        else:
-            text += '%s, ' % self.tr('rospkg not found - using roslib')
+        text += 'rospkg %s, ' % _rospkg_version
 
         if QT_BINDING == 'pyside':
             text += 'PySide'
@@ -99,5 +91,5 @@ class AboutHandler(QObject):
 
         text += '.</p>'
 
-        mb = QMessageBox(QMessageBox.NoIcon, self.tr('About ROS GUI'), text, QMessageBox.Ok, self.parent())
+        mb = QMessageBox(QMessageBox.NoIcon, self.tr('About rqt'), text, QMessageBox.Ok, self.parent())
         mb.exec_()
