@@ -32,9 +32,6 @@
 
 import pydot
 
-import roslib
-roslib.load_manifest('qt_dotgraph')
-
 from python_qt_binding.QtCore import QPointF, QRectF
 from python_qt_binding.QtGui import QColor
 
@@ -90,7 +87,7 @@ class DotToQtGenerator():
         else:
             label_pos = (float(bb[0]) + (float(bb[2]) - float(bb[0])) / 2, float(bb[1]) + (float(bb[3]) - float(bb[1])) - LABEL_HEIGHT / 2)
         bounding_box.moveCenter(QPointF(float(bb[0]) + (float(bb[2]) - float(bb[0])) / 2, -float(bb[1]) - (float(bb[3]) - float(bb[1])) / 2))
-        name = subgraph.attr['label']
+        name = subgraph.attr.get('label', '')
         color = QColor(subgraph.attr['color']) if 'color' in subgraph.attr else None
         subgraph_nodeitem = NodeItem(highlight_level,
                                      bounding_box,
