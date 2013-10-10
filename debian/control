@@ -1,0 +1,12 @@
+Source: ros-groovy-qt-dotgraph
+Section: misc
+Priority: extra
+Maintainer: Dirk Thomas <dthomas@osrfoundation.org>
+Build-Depends: debhelper (>= 7.0.50~), ros-groovy-catkin
+Homepage: http://ros.org/wiki/qt_dotgraph
+Standards-Version: 3.9.2
+
+Package: ros-groovy-qt-dotgraph
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-pydot, ros-groovy-python-qt-binding
+Description: qt_dotgraph provides helpers to work with dot graphs.
