@@ -87,18 +87,49 @@ public:
     }
   }
 
-  virtual QMap<QString, QString> discover()
+  virtual QMap<QString, QString> discover(QObject* discovery_data)
   {
-    return PluginProvider::discover();
+    return PluginProvider::discover(discovery_data);
   }
 
-  virtual QList<PluginDescriptor*> discover_descriptors()
+  virtual QList<PluginDescriptor*> discover_descriptors(QObject* discovery_data)
   {
     if (class_loader_)
     {
       delete class_loader_;
     }
-    class_loader_ = new pluginlib::ClassLoader<T>(export_tag_.toStdString(), base_class_type_.toStdString());
+
+    Settings discovery_settings(discovery_data);
+    QString key = "qt_gui_cpp.RosPluginlibPluginProvider/" + export_tag_ + " " + base_class_type_;
+    bool is_cached = discovery_settings.contains(key);
+
+    std::vector<std::string> plugin_xml_paths;
+    // reuse plugin paths from cache if available
+    if (is_cached)
+    {
+      QStringList paths = discovery_settings.value(key).toStringList();
+      for (QStringList::const_iterator it = paths.begin(); it != paths.end(); it++)
+      {
+        plugin_xml_paths.push_back(it->toStdString());
+      }
+    }
+    else
+    {
+      qDebug("RosPluginlibPluginProvider::discover_descriptors() crawling for plugins of type '%s' and base class '%s'", export_tag_.toStdString().c_str(), base_class_type_.toStdString().c_str());
+    }
+    class_loader_ = new pluginlib::ClassLoader<T>(export_tag_.toStdString(), base_class_type_.toStdString(), std::string("plugin"), plugin_xml_paths);
+
+    if (!is_cached)
+    {
+      // save discovered paths
+      std::vector<std::string> paths = class_loader_->getPluginXmlPaths();
+      QStringList qpaths;
+      for (std::vector<std::string>::const_iterator it = paths.begin(); it != paths.end(); it++)
+      {
+        qpaths.push_back(it->c_str());
+      }
+      discovery_settings.setValue(key, qpaths);
+    }
 
     QList<PluginDescriptor*> descriptors;
 
@@ -124,8 +155,9 @@ public:
       attributes["plugin_path"] = plugin_path.c_str();
 
       // check if plugin is available
-      std::string library_path = class_loader_->getClassLibraryPath(lookup_name);
-      attributes["not_available"] = !std::ifstream(library_path.c_str()) ? QString("library ").append(lookup_name.c_str()).append(" not found (may be it must be built?)") : "";
+      //std::string library_path = class_loader_->getClassLibraryPath(lookup_name);
+      //attributes["not_available"] = !std::ifstream(library_path.c_str()) ? QString("library ").append(lookup_name.c_str()).append(" not found (may be it must be built?)") : "";
+      attributes["not_available"] = "";
 
       PluginDescriptor* plugin_descriptor = new PluginDescriptor(lookup_name.c_str(), attributes);
       QString label = name.c_str();
@@ -231,6 +263,16 @@ public:
     QCoreApplication::postEvent(this, new QEvent(static_cast<QEvent::Type>(unload_libraries_event_)));
   }
 
+  bool event(QEvent* e)
+  {
+    if (e->type() == unload_libraries_event_)
+    {
+      libraries_to_unload_.clear();
+      return true;
+    }
+    return QObject::event(e);
+  }
+
 protected:
 
   virtual boost::shared_ptr<T> create_plugin(const std::string& lookup_name, PluginContext* /*plugin_context*/ = 0)
@@ -241,18 +283,6 @@ protected:
   virtual void init_plugin(const QString& /*plugin_id*/, PluginContext* plugin_context, Plugin* plugin)
   {
     plugin->initPlugin(*plugin_context);
-  }
-
-private slots:
-
-  bool event(QEvent* e)
-  {
-    if (e->type() == unload_libraries_event_)
-    {
-      libraries_to_unload_.clear();
-      return true;
-    }
-    return QObject::event(e);
   }
 
 private:
