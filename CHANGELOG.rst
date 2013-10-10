@@ -2,6 +2,10 @@
 Changelog for package qt_gui_app
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.18 (2013-10-09)
+-------------------
+* improve startup time (`#28 <https://github.com/ros-visualization/qt_gui_core/issues/28>`_)
+
 0.2.17 (2013-08-21)
 -------------------
 
