@@ -1,3 +1,28 @@
+## qt_gui_core - 0.2.19-0
+
+User `dthomas@drudge` released the packages in the `qt_gui_core` repository by running `/usr/bin/bloom-release -r hydro -t hydro qt_gui_core` on `Wed, 08 Jan 2014 23:49:29 -0000`
+
+These packages were released:
+- `qt_dotgraph`
+- `qt_gui`
+- `qt_gui_app`
+- `qt_gui_core`
+- `qt_gui_cpp`
+- `qt_gui_py_common`
+
+Version of package(s) in repository `qt_gui_core`:
+- rosdistro version: `0.2.18-0`
+- old version: `0.2.18-0`
+- new version: `0.2.19-0`
+
+Versions of tools used:
+- bloom version: `0.4.4`
+- catkin_pkg version: `0.1.24`
+- rosdep version: `0.10.24`
+- rosdistro version: `0.2.20`
+- vcstools version: `0.1.33`
+
+
 ## qt_gui_core - 0.2.18-0
 
 User `dthomas@drudge` released the packages in the `qt_gui_core` repository by running `/usr/bin/bloom-release -r groovy -t groovy qt_gui_core` on `Thu, 10 Oct 2013 18:34:42 -0000`
