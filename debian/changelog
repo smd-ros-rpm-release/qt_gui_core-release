@@ -1,0 +1,86 @@
+ros-hydro-qt-gui (0.2.19-0quantal) quantal; urgency=high
+
+  * added prefix for the plugin managers settings to allow for multiple caches
+  * support minimize for containers (#30 <https://github.com/ros-visualization/qt_gui_core/issues/30>)
+  * fix stacktrace when closing container via 'x' in title bar (#32 <https://github.com/ros-visualization/qt_gui_core/issues/32>)
+  * fix toolbar area type conversion for pyside
+  * update icon for container
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Wed, 08 Jan 2014 08:00:00 -0000
+
+ros-hydro-qt-gui (0.2.18-0quantal) quantal; urgency=high
+
+  * improve startup time (#28 <https://github.com/ros-visualization/qt_gui_core/issues/28>)
+  * rename rqt window title
+  * exit application when standalone plugin fails to load
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Wed, 09 Oct 2013 07:00:00 -0000
+
+ros-hydro-qt-gui (0.2.17-0quantal) quantal; urgency=high
+
+  * add PluginLoadError for know errors to avoid printing stacktraces (ros-visualization/rqt#85 <https://github.com/ros-visualization/rqt/issues/85>)
+  * inherit icons from plugin menu for dock widgets
+  * fix several OS X related rendering issues, mostly icons and bring the window to front on startup (ros-visualization/rqt#83 <https://github.com/ros-visualization/rqt/issues/83>)
+  * fix about dialog to not show application icon
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Wed, 21 Aug 2013 07:00:00 -0000
+
+ros-hydro-qt-gui (0.2.16-0quantal) quantal; urgency=high
+
+  * make plugin resources relative to plugin.xml (instead of package.xml) (#16 <https://github.com/ros-visualization/qt_gui_core/issues/16>)
+  * add feature to minimize dock widgets (#13 <https://github.com/ros-visualization/qt_gui_core/issues/13>)
+  * add feature that each each dock widget can show its own window icon (#19 <https://github.com/ros-visualization/qt_gui_core/issues/19>)
+  * add option '--perspective-file' to load exported perspective from a file via cli (#18 <https://github.com/ros-visualization/qt_gui_core/issues/18>)
+  * add option '-f' to freeze layout of dock widgets (#21 <https://github.com/ros-visualization/qt_gui_core/issues/21>)
+  * restrict reparenting to specific main windows, prevent reparenting into arbitrary main windows (#14 <https://github.com/ros-visualization/qt_gui_core/issues/14>)
+  * fix help provider
+  * fix container being closable even when perspective is locked (#20 <https://github.com/ros-visualization/qt_gui_core/issues/20>)
+  * fix search path of theme icons for OS X (#17 <https://github.com/ros-visualization/qt_gui_core/issues/17>)
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Thu, 06 Jun 2013 07:00:00 -0000
+
+ros-hydro-qt-gui (0.2.15-0quantal) quantal; urgency=high
+
+  * revert changes to help_provider from 0.2.13
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Tue, 02 Apr 2013 07:00:00 -0000
+
+ros-hydro-qt-gui (0.2.14-0quantal) quantal; urgency=high
+
+
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Fri, 29 Mar 2013 05:42:00 -0000
+
+ros-hydro-qt-gui (0.2.13-0quantal) quantal; urgency=high
+
+  * modify help_provider
+  * fix menu bar visibility on OS X
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Fri, 29 Mar 2013 01:08:00 -0000
+
+ros-hydro-qt-gui (0.2.12-0quantal) quantal; urgency=high
+
+  * fix when dbus is available but no session bus (#9 <https://github.com/ros-visualization/qt_gui_core/issues/9>)
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Thu, 17 Jan 2013 08:00:00 -0000
+
+ros-hydro-qt-gui (0.2.11-0quantal) quantal; urgency=high
+
+
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Sun, 13 Jan 2013 08:00:00 -0000
+
+ros-hydro-qt-gui (0.2.10-0quantal) quantal; urgency=high
+
+  * add option -t option to keep windows always on top
+  * enable plugins to provide their arguments for the command line
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Fri, 11 Jan 2013 08:00:00 -0000
+
+ros-hydro-qt-gui (0.2.9-0quantal) quantal; urgency=high
+
+  * first public release for Groovy
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Fri, 21 Dec 2012 08:00:00 -0000
+
+
