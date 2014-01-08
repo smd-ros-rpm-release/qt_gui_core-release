@@ -1,0 +1,71 @@
+ros-hydro-qt-dotgraph (0.2.19-0raring) raring; urgency=high
+
+
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Wed, 08 Jan 2014 08:00:00 -0000
+
+ros-hydro-qt-dotgraph (0.2.18-0raring) raring; urgency=high
+
+  * improve startup time (#28 <https://github.com/ros-visualization/qt_gui_core/issues/28>)
+  * added kwarg for subgraphlabel
+  * change maintainer of qt_dotgraph (#27 <https://github.com/ros-visualization/qt_gui_core/issues/27>)
+
+ -- Dirk Thomas <dthomas@osrfoundation.org>  Wed, 09 Oct 2013 07:00:00 -0000
+
+ros-hydro-qt-dotgraph (0.2.17-0raring) raring; urgency=high
+
+  * fix the name/label issue with pygraphviz
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Wed, 21 Aug 2013 07:00:00 -0000
+
+ros-hydro-qt-dotgraph (0.2.16-0raring) raring; urgency=high
+
+
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Thu, 06 Jun 2013 07:00:00 -0000
+
+ros-hydro-qt-dotgraph (0.2.15-0raring) raring; urgency=high
+
+
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Tue, 02 Apr 2013 07:00:00 -0000
+
+ros-hydro-qt-dotgraph (0.2.14-0raring) raring; urgency=high
+
+
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Fri, 29 Mar 2013 05:42:00 -0000
+
+ros-hydro-qt-dotgraph (0.2.13-0raring) raring; urgency=high
+
+
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Fri, 29 Mar 2013 01:08:00 -0000
+
+ros-hydro-qt-dotgraph (0.2.12-0raring) raring; urgency=high
+
+
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Thu, 17 Jan 2013 08:00:00 -0000
+
+ros-hydro-qt-dotgraph (0.2.11-0raring) raring; urgency=high
+
+
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Sun, 13 Jan 2013 08:00:00 -0000
+
+ros-hydro-qt-dotgraph (0.2.10-0raring) raring; urgency=high
+
+  * skip subgraphs with empty bounding box
+  * use color for pydot subgraphs
+  * fix (not used) pygraphviz backend
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Fri, 11 Jan 2013 08:00:00 -0000
+
+ros-hydro-qt-dotgraph (0.2.9-0raring) raring; urgency=high
+
+  * first public release for Groovy
+
+ -- Thibault Kruse <tkruse@willowgarage.com>  Fri, 21 Dec 2012 08:00:00 -0000
+
+
