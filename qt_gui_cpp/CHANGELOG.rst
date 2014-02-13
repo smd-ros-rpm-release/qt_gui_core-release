@@ -2,6 +2,9 @@
 Changelog for package qt_gui_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.21 (2014-02-12)
+-------------------
+
 0.2.20 (2014-01-19)
 -------------------
 * disable shiboken when version is detected which would segfault (`#35 <https://github.com/ros-visualization/qt_gui_core/issues/35>`_)
