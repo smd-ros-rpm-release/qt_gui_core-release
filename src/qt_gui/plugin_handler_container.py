@@ -30,6 +30,7 @@
 
 from .dock_widget_container import DockWidgetContainer
 from .plugin_handler import PluginHandler
+from .window_changed_signaler import WindowChangedSignaler
 
 
 class PluginHandlerContainer(PluginHandler):
@@ -51,18 +52,25 @@ class PluginHandlerContainer(PluginHandler):
         self._update_dock_widget_features(self._container)
         self._add_dock_widget_to_main_window(self._container)
         self._update_title_bar(self._container, True, True)
-        self._widgets[self._container.main_window] = [self._container, None, None]
+        signaler2 = WindowChangedSignaler(self._container, self._container)
+        signaler2.hide_signal.connect(self._on_dock_widget_hide)
+        signaler2.show_signal.connect(self._on_dock_widget_show)
+        # trigger to update initial window state
+        signaler2.emit_all()
+        self._widgets[self._container.main_window] = [self._container, None, signaler2]
         self._container_manager.add_container(self._container)
         self._emit_load_completed()
 
-    def _shutdown_plugin(self):
+    def remove_widget(self, widget):
         self._container_manager.move_container_children_to_parent(self._container)
         self._container_manager.remove_container(self._container)
+        super(PluginHandlerContainer, self).remove_widget(widget)
+        self._container = None
+
+    def _shutdown_plugin(self):
         self.emit_shutdown_plugin_completed()
 
     def _unload(self):
-        self._container.deleteLater()
-        self._container = None
         self._emit_unload_completed()
 
     def _save_settings(self, plugin_settings, instance_settings):
