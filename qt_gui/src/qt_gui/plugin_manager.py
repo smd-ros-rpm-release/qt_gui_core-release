@@ -34,7 +34,6 @@ import traceback
 
 from python_qt_binding.QtCore import qCritical, qDebug, QObject, QSettings, Qt, qWarning, Signal, Slot
 
-from .container_manager import ContainerManager
 from .errors import PluginLoadError
 from .plugin_handler_container import PluginHandlerContainer
 from .plugin_handler_direct import PluginHandlerDirect
@@ -60,12 +59,12 @@ class PluginManager(QObject):
 
     discovery_cache_max_age = 60 * 60 * 24  # one day
 
-    def __init__(self, plugin_provider, settings, application_context):
+    def __init__(self, plugin_provider, settings, application_context, settings_prefix=''):
         super(PluginManager, self).__init__()
         self.setObjectName('PluginManager')
 
         self._plugin_provider = plugin_provider
-        self._settings = Settings(SettingsProxy(settings), 'plugin_manager')
+        self._settings = Settings(SettingsProxy(settings), '/'.join([x for x in ['plugin_manager', settings_prefix] if x != '']))
         self._application_context = application_context
 
         self._main_window = None
@@ -94,9 +93,9 @@ class PluginManager(QObject):
             from .plugin_manager_dbus_interface import PluginManagerDBusInterface
             self._dbus_service = PluginManagerDBusInterface(self, self._application_context)
 
-    def set_main_window(self, main_window, menu_bar):
+    def set_main_window(self, main_window, menu_bar, container_manager):
         self._main_window = main_window
-        self._container_manager = ContainerManager(self._main_window, self)
+        self._container_manager = container_manager
         self.plugins_changed_signal.connect(self._container_manager.restore_state_of_containers)
         if menu_bar is not None:
             self._plugin_menu = PluginMenu(menu_bar, self)
@@ -288,7 +287,7 @@ class PluginManager(QObject):
     def unload_plugin(self, instance_id_str):
         # unloading a plugin with locked perspective or running standalone triggers close of application
         if self._application_context.options.lock_perspective or self._application_context.options.standalone_plugin:
-            self.close_application_signal.emit()
+            self._close_application_signal()
             return
         instance_id = PluginInstanceId(instance_id=instance_id_str)
         qDebug('PluginManager.unload_plugin(%s)' % str(instance_id))
@@ -436,7 +435,11 @@ class PluginManager(QObject):
         if self._number_of_ongoing_calls == 0:
             qDebug('PluginManager.close_application() completed')
             self._number_of_ongoing_calls = None
-            self.close_application_signal.emit()
+            self._close_application_signal()
+
+    def _close_application_signal(self):
+        self._plugin_provider.shutdown()
+        self.close_application_signal.emit()
 
 
     def restore_settings(self, global_settings, perspective_settings):
