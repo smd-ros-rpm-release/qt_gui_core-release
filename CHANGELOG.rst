@@ -2,6 +2,22 @@
 Changelog for package qt_gui_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.22 (2014-03-04)
+-------------------
+* add shutdown notification for plugin providers (`#39 <https://github.com/ros-visualization/qt_gui_core/issues/39>`_)
+
+0.2.21 (2014-02-12)
+-------------------
+
+0.2.20 (2014-01-19)
+-------------------
+* disable shiboken when version is detected which would segfault (`#35 <https://github.com/ros-visualization/qt_gui_core/issues/35>`_)
+
+0.2.19 (2014-01-08)
+-------------------
+* use specific python version catkin has decided on
+* fix sip bindings when paths contain spaces (`#33 <https://github.com/ros-visualization/qt_gui_core/issues/33>`_)
+
 0.2.18 (2013-10-09)
 -------------------
 * improve startup time (`#28 <https://github.com/ros-visualization/qt_gui_core/issues/28>`_)
