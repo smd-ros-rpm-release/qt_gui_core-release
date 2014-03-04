@@ -2,6 +2,25 @@
 Changelog for package qt_gui
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.22 (2014-03-04)
+-------------------
+* add shutdown notification for plugin providers (`#39 <https://github.com/ros-visualization/qt_gui_core/issues/39>`_)
+
+0.2.21 (2014-02-12)
+-------------------
+* add keyboard shortcuts for static menu entries
+
+0.2.20 (2014-01-19)
+-------------------
+
+0.2.19 (2014-01-08)
+-------------------
+* added prefix for the plugin managers settings to allow for multiple caches
+* support minimize for containers (`#30 <https://github.com/ros-visualization/qt_gui_core/issues/30>`_)
+* fix stacktrace when closing container via 'x' in title bar (`#32 <https://github.com/ros-visualization/qt_gui_core/issues/32>`_)
+* fix toolbar area type conversion for pyside
+* update icon for container
+
 0.2.18 (2013-10-09)
 -------------------
 * improve startup time (`#28 <https://github.com/ros-visualization/qt_gui_core/issues/28>`_)
