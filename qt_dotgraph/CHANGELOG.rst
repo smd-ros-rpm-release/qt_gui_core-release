@@ -2,6 +2,10 @@
 Changelog for package qt_dotgraph
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.23 (2014-05-07)
+-------------------
+* add support for edge coloring and changing of pen width
+
 0.2.22 (2014-03-04)
 -------------------
 
