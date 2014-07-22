@@ -1,3 +1,28 @@
+## qt_gui_core (hydro) - 0.2.25-0
+
+The packages in the `qt_gui_core` repository were released into the `hydro` distro by running `/usr/bin/bloom-release -r hydro -t hydro qt_gui_core` on `Tue, 22 Jul 2014 21:31:50 -0000`
+
+These packages were released:
+- `qt_dotgraph`
+- `qt_gui`
+- `qt_gui_app`
+- `qt_gui_core`
+- `qt_gui_cpp`
+- `qt_gui_py_common`
+
+Version of package(s) in repository `qt_gui_core`:
+- rosdistro version: `0.2.22-0`
+- old version: `0.2.22-0`
+- new version: `0.2.25-0`
+
+Versions of tools used:
+- bloom version: `0.5.10`
+- catkin_pkg version: `0.2.4`
+- rosdep version: `0.10.28`
+- rosdistro version: `0.3.5`
+- vcstools version: `0.1.35`
+
+
 ## qt_gui_core (indigo) - 0.2.25-0
 
 The packages in the `qt_gui_core` repository were released into the `indigo` distro by running `/usr/bin/bloom-release -r indigo -t indigo qt_gui_core` on `Fri, 11 Jul 2014 06:21:19 -0000`
