@@ -31,8 +31,12 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 from distutils.version import LooseVersion
-import pydot
 import urllib
+
+# work around for https://bugs.launchpad.net/ubuntu/+source/pydot/+bug/1321135
+import pyparsing
+pyparsing._noncomma = "".join([c for c in pyparsing.printables if c != ","])
+import pydot
 
 
 # Reference implementation for a dotcode factory
@@ -134,7 +138,7 @@ class PydotFactory():
         graph.add_subgraph(g)
         return g
 
-    def add_edge_to_graph(self, graph, nodename1, nodename2, label=None, url=None, simplify=True, style=None):
+    def add_edge_to_graph(self, graph, nodename1, nodename2, label=None, url=None, simplify=True, style=None, penwidth=1, color=None):
         if simplify and LooseVersion(pydot.__version__) < LooseVersion('1.0.10'):
             if graph.get_edge(self.escape_name(nodename1), self.escape_name(nodename2)) != []:
                 return
@@ -145,6 +149,11 @@ class PydotFactory():
             edge.set_URL(self.escape_name(url))
         if style is not None:
             edge.set_style(style)
+        edge.obj_dict['attributes']['penwidth'] = str(penwidth)
+        if color is not None:
+            edge.obj_dict['attributes']['colorR'] = str(color[0])
+            edge.obj_dict['attributes']['colorG'] = str(color[1])
+            edge.obj_dict['attributes']['colorB'] = str(color[2])
         graph.add_edge(edge)
 
     def create_dot(self, graph):
