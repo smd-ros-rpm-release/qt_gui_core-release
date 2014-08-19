@@ -2,6 +2,20 @@
 Changelog for package qt_gui
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.26 (2014-08-18)
+-------------------
+* prevent floating of plugins via double-click when -f flag is set (`#48 <https://github.com/ros-visualization/qt_gui_core/issues/48>`_)
+
+0.2.25 (2014-07-10)
+-------------------
+
+0.2.24 (2014-05-21)
+-------------------
+
+0.2.23 (2014-05-07)
+-------------------
+* fix ToolBarArea type with PySide
+
 0.2.22 (2014-03-04)
 -------------------
 * add shutdown notification for plugin providers (`#39 <https://github.com/ros-visualization/qt_gui_core/issues/39>`_)
