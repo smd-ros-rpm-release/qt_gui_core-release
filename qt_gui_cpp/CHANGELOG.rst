@@ -2,6 +2,19 @@
 Changelog for package qt_gui_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.26 (2014-08-18)
+-------------------
+
+0.2.25 (2014-07-10)
+-------------------
+* fix finding specific version of PythonLibs with CMake 3 (`#45 <https://github.com/ros-visualization/qt_gui_core/issues/45>`_)
+
+0.2.24 (2014-05-21)
+-------------------
+
+0.2.23 (2014-05-07)
+-------------------
+
 0.2.22 (2014-03-04)
 -------------------
 * add shutdown notification for plugin providers (`#39 <https://github.com/ros-visualization/qt_gui_core/issues/39>`_)
